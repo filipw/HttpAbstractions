@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,8 +51,8 @@ namespace Microsoft.AspNetCore.Authentication
         private readonly IDictionary<string, AuthenticationScheme> _schemes;
         private readonly List<AuthenticationScheme> _requestHandlers;
         // Used as a safe return value for enumeration apis
-        private IEnumerable<AuthenticationScheme> _schemesCopy = new AuthenticationScheme[0];
-        private IEnumerable<AuthenticationScheme> _requestHandlersCopy = new AuthenticationScheme[0];
+        private IEnumerable<AuthenticationScheme> _schemesCopy = Array.Empty<AuthenticationScheme>();
+        private IEnumerable<AuthenticationScheme> _requestHandlersCopy = Array.Empty<AuthenticationScheme>();
 
         private Task<AuthenticationScheme> GetDefaultSchemeAsync()
             => _options.DefaultScheme != null
@@ -149,10 +148,10 @@ namespace Microsoft.AspNetCore.Authentication
                 if (typeof(IAuthenticationRequestHandler).IsAssignableFrom(scheme.HandlerType))
                 {
                     _requestHandlers.Add(scheme);
-                    _requestHandlersCopy = _requestHandlers.ToList();
+                    _requestHandlersCopy = _requestHandlers.ToArray();
                 }
                 _schemes[scheme.Name] = scheme;
-                _schemesCopy = _schemes.Values.ToList();
+                _schemesCopy = _schemes.Values.ToArray();
             }
         }
 
@@ -173,12 +172,10 @@ namespace Microsoft.AspNetCore.Authentication
                     var scheme = _schemes[name];
                     if (_requestHandlers.Remove(scheme))
                     {
-                        _requestHandlersCopy = _requestHandlers.ToList();
+                        _requestHandlersCopy = _requestHandlers.ToArray();
                     }
-                    if (_schemes.Remove(name))
-                    {
-                        _schemesCopy = _schemes.Values.ToList();
-                    }
+                    _schemes.Remove(name);
+                    _schemesCopy = _schemes.Values.ToArray();
                 }
             }
         }
