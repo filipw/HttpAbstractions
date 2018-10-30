@@ -201,8 +201,8 @@ namespace Microsoft.AspNetCore.Http.Extensions
             var queryString = request.QueryString.Value;
 
             // PERF: Calculate string length to allocate correct buffer size for StringBuilder.
-            var length = request.Scheme.Length + SchemeDelimiter.Length + host.Length
-                + pathBase.Length + path.Length + queryString.Length;
+            var length = request.Scheme?.Length ?? 0 + SchemeDelimiter.Length + host?.Length ?? 0
+                + pathBase?.Length ?? 0 + path?.Length ?? 0 + queryString?.Length ?? 0;
 
             return new StringBuilder(length)
                 .Append(request.Scheme)
