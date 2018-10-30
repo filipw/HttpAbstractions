@@ -204,7 +204,7 @@ namespace Microsoft.AspNetCore.Http.Extensions
             var length = request.Scheme.Length + SchemeDelimiter.Length + host.Length
                 + pathBase.Length + path.Length + queryString.Length;
 
-            return new StringBuilder()
+            return new StringBuilder(length)
                 .Append(request.Scheme)
                 .Append(SchemeDelimiter)
                 .Append(host)
